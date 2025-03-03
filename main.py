@@ -6,6 +6,14 @@ import csv
 import string
 
 
+def load_excluded_words():
+    excluded_words = set()
+    if os.path.exists("excluded_words.txt"):
+        with open("excluded_words.txt", "r", encoding="utf-8") as file:
+            excluded_words = {line.strip().lower() for line in file}
+    return excluded_words
+
+
 def choose_folder():
     folder_selected = filedialog.askdirectory()
     if folder_selected:
@@ -14,6 +22,7 @@ def choose_folder():
 
 def process_files(folder):
     word_count = Counter()
+    excluded_words = load_excluded_words()
 
     for filename in os.listdir(folder):
         if filename.endswith(".txt"):
@@ -21,6 +30,7 @@ def process_files(folder):
                 text = file.read().lower()
                 text = text.translate(str.maketrans("", "", string.punctuation))
                 words = text.split()
+                words = [word for word in words if word not in excluded_words]
                 word_count.update(words)
 
     display_results(word_count)
