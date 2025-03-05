@@ -4,7 +4,6 @@ from tkinter import filedialog, ttk
 from collections import Counter
 import csv
 import string
-import pymorphy2
 
 
 def load_excluded_words():
@@ -13,6 +12,13 @@ def load_excluded_words():
         with open("excluded_words.txt", "r", encoding="utf-8") as file:
             excluded_words = {line.strip().lower() for line in file}
     return excluded_words
+
+
+def normalize_word(word, min_length=4):
+    """Функция для упрощённого приведения слова к основе путем усечения"""
+    if len(word) > min_length:
+        return word[:min_length]
+    return word
 
 
 def choose_folder():
@@ -24,7 +30,6 @@ def choose_folder():
 def process_files(folder):
     word_count = Counter()
     excluded_words = load_excluded_words()
-    morph = pymorphy2.MorphAnalyzer()
 
     for filename in os.listdir(folder):
         if filename.endswith(".txt"):
@@ -32,8 +37,17 @@ def process_files(folder):
                 text = file.read().lower()
                 text = text.translate(str.maketrans("", "", string.punctuation + "\"'“”‘’«»"))
                 words = text.split()
-                words = [morph.parse(word)[0].normal_form for word in words if word not in excluded_words]
-                word_count.update(words)
+                normalized_words = {}
+
+                for word in words:
+                    if word not in excluded_words:
+                        root = normalize_word(word)
+                        if root in normalized_words:
+                            normalized_words[root] += 1
+                        else:
+                            normalized_words[root] = 1
+
+                word_count.update(normalized_words)
 
     display_results(word_count)
 
