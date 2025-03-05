@@ -28,7 +28,7 @@ def process_files(folder):
         if filename.endswith(".txt"):
             with open(os.path.join(folder, filename), "r", encoding="utf-8") as file:
                 text = file.read().lower()
-                text = text.translate(str.maketrans("", "", string.punctuation))
+                text = text.translate(str.maketrans("", "", string.punctuation + "\"'“”‘’«»"))
                 words = text.split()
                 words = [word for word in words if word not in excluded_words]
                 word_count.update(words)
