@@ -4,6 +4,7 @@ from tkinter import filedialog, ttk
 from collections import Counter
 import csv
 import string
+import pymorphy2
 
 
 def load_excluded_words():
@@ -23,6 +24,7 @@ def choose_folder():
 def process_files(folder):
     word_count = Counter()
     excluded_words = load_excluded_words()
+    morph = pymorphy2.MorphAnalyzer()
 
     for filename in os.listdir(folder):
         if filename.endswith(".txt"):
@@ -30,7 +32,7 @@ def process_files(folder):
                 text = file.read().lower()
                 text = text.translate(str.maketrans("", "", string.punctuation + "\"'“”‘’«»"))
                 words = text.split()
-                words = [word for word in words if word not in excluded_words]
+                words = [morph.parse(word)[0].normal_form for word in words if word not in excluded_words]
                 word_count.update(words)
 
     display_results(word_count)
