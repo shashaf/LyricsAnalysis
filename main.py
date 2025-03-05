@@ -5,11 +5,13 @@ from collections import Counter
 import csv
 import string
 
+EXCLUDED_WORDS_FILE = "excluded_words_full.txt"
+
 
 def load_excluded_words():
     excluded_words = set()
-    if os.path.exists("excluded_words.txt"):
-        with open("excluded_words.txt", "r", encoding="utf-8") as file:
+    if os.path.exists(EXCLUDED_WORDS_FILE):
+        with open(EXCLUDED_WORDS_FILE, "r", encoding="utf-8") as file:
             excluded_words = {line.strip().lower() for line in file}
     return excluded_words
 
