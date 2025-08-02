@@ -57,7 +57,7 @@ def save_to_csv():
 
 
 root = tk.Tk()
-root.title("Анализ текстов песен")
+root.title("Количественный анализ текстов")
 root.geometry("500x400")
 
 tk.Button(root, text="Выбрать папку", command=choose_folder).pack(pady=5)
